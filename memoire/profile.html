@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profile - Waslha</title>
+    <link rel="stylesheet" href="css/global.css">
+</head>
+
+<body>
+    <!-- Navigation Bar (role-aware) -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="#" class="navbar-brand" id="dashboardLink">Was<span>lha</span></a>
+            <div class="navbar-links">
+                <a href="#" class="navbar-link" id="ordersLink" data-i18n="nav.orders">Orders</a>
+                <a href="#" class="navbar-link" id="createOrderLink" data-i18n="nav.createOrder">Create Order</a>
+                <a href="profile.html" class="navbar-link" data-i18n="nav.profile">Profile</a>
+                <button class="btn-link" onclick="auth.logout()" data-i18n="nav.logout">Logout</button>
+                <div class="navbar-toggles">
+                    <button class="toggle-btn theme-toggle" onclick="platformUI.toggleTheme()">🌙 Dark</button>
+                    <button class="toggle-btn lang-toggle" onclick="platformUI.toggleLang()">AR عربي</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+        <div class="page-content">
+            <div class="page-header">
+                <div class="page-header-illustrated">
+                    <div class="profile-illustration">&#128100;</div>
+                    <div>
+                        <h1 class="page-title" data-i18n="profile.title">Profile & Settings</h1>
+                        <p class="page-subtitle" data-i18n="profile.subtitle">Manage your account information</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile Information Card -->
+            <div class="card" id="profileViewCard">
+                <div class="card-header">
+                    <h2 class="card-title" data-i18n="profile.info">Account Information</h2>
+                </div>
+                <div class="card-body">
+                    <div
+                        style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                        <div>
+                            <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.25rem;"
+                                data-i18n="profile.name">Full Name</p>
+                            <p style="font-weight: 600; color: var(--text-primary); font-size: 1.125rem;"
+                                id="profileName">-</p>
+                        </div>
+                        <div>
+                            <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.25rem;"
+                                data-i18n="profile.email">Email</p>
+                            <p style="font-weight: 600; color: var(--text-primary); font-size: 1.125rem;"
+                                id="profileEmail">-</p>
+                        </div>
+                        <div>
+                            <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.25rem;"
+                                data-i18n="profile.role">Role</p>
+                            <p style="font-weight: 600; color: var(--text-primary); font-size: 1.125rem;"
+                                id="profileRole">-</p>
+                        </div>
+                        <div id="profilePhoneGroup" style="display: none;">
+                            <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.25rem;"
+                                data-i18n="profile.phone">Phone</p>
+                            <p style="font-weight: 600; color: var(--text-primary); font-size: 1.125rem;"
+                                id="profilePhone">-</p>
+                        </div>
+                        <div id="profileAddressGroup" style="display: none;">
+                            <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.25rem;"
+                                data-i18n="profile.address">Address</p>
+                            <p style="font-weight: 600; color: var(--text-primary); font-size: 1.125rem;"
+                                id="profileAddress">-</p>
+                        </div>
+                        <div id="profileCompanyGroup" style="display: none;">
+                            <p style="font-size: 0.875rem; color: var(--text-secondary); margin-bottom: 0.25rem;"
+                                data-i18n="profile.company">Delivery Company</p>
+                            <p style="font-weight: 600; color: var(--text-primary); font-size: 1.125rem;"
+                                id="profileCompany">-</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Edit Profile Form (hidden by default, merchant only) -->
+            <div class="card" id="profileEditCard" style="display: none;">
+                <div class="card-header">
+                    <h2 class="card-title" data-i18n="profile.editTitle">Edit Profile</h2>
+                </div>
+                <div class="card-body">
+                    <form id="editProfileForm">
+                        <div
+                            style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem;">
+                            <div class="form-group">
+                                <label for="editProfileName" class="form-label" data-i18n="profile.name">Full
+                                    Name</label>
+                                <input type="text" id="editProfileName" class="form-input" required minlength="2">
+                                <span class="form-error" id="editProfileNameError"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="editProfileEmail" class="form-label" data-i18n="profile.email">Email</label>
+                                <input type="email" id="editProfileEmail" class="form-input" required>
+                                <span class="form-error" id="editProfileEmailError"></span>
+                            </div>
+                            <div class="form-group">
+                                <label for="editProfilePassword" class="form-label" data-i18n="profile.password">New
+                                    Password</label>
+                                <input type="password" id="editProfilePassword" class="form-input"
+                                    placeholder="Leave blank to keep current" minlength="6">
+                                <span class="form-error" id="editProfilePasswordError"></span>
+                            </div>
+                            <div class="form-group" id="editProfilePhoneGroup" style="display: none;">
+                                <label for="editProfilePhone" class="form-label" data-i18n="profile.phone">Phone</label>
+                                <input type="tel" id="editProfilePhone" class="form-input">
+                                <span class="form-error" id="editProfilePhoneError"></span>
+                            </div>
+                            <div class="form-group" id="editProfileAddressGroup" style="display: none;">
+                                <label for="editProfileAddress" class="form-label"
+                                    data-i18n="profile.address">Address</label>
+                                <input type="text" id="editProfileAddress" class="form-input"
+                                    placeholder="Your business address">
+                                <span class="form-error" id="editProfileAddressError"></span>
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2" style="margin-top: 1.5rem;">
+                            <button type="submit" class="btn btn-primary" data-i18n="profile.saveBtn">Save
+                                Changes</button>
+                            <button type="button" class="btn btn-secondary" id="cancelEditBtn"
+                                data-i18n="profile.cancelBtn">Cancel</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="mt-4 d-flex gap-2">
+                <button class="btn btn-primary" id="editProfileBtn" style="display: none;"
+                    data-i18n="profile.editBtn">Edit Profile</button>
+                <button class="btn btn-danger" onclick="auth.logout()" data-i18n="profile.logout">Logout</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase/supabaseClient.js"></script>
+    <script src="js/db.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/i18n.js"></script>
+    <script>
+        // Load profile information when page loads
+        document.addEventListener('DOMContentLoaded', function () {
+            const currentUser = auth.getCurrentUser();
+
+            if (!currentUser) {
+                window.location.replace('login.html');
+                return;
+            }
+
+            // Initialize navigation
+            auth.initNavigation();
+
+            // Initialize theme & language
+            platformUI.init();
+
+            // Render smart back button
+            platformUI.renderBackButton('.page-content');
+
+            // Display user information
+            function renderProfile() {
+                var user = auth.getCurrentUser();
+                document.getElementById('profileName').textContent = user.fullName || 'N/A';
+                document.getElementById('profileEmail').textContent = user.email || 'N/A';
+
+                const roleText = user.role === 'merchant' ? 'Merchant' : 'Delivery Company';
+                document.getElementById('profileRole').textContent = roleText;
+
+                // Phone (merchant)
+                if (user.role === 'merchant' && user.phone) {
+                    document.getElementById('profilePhoneGroup').style.display = 'block';
+                    document.getElementById('profilePhone').textContent = user.phone;
+                }
+
+                // Address (merchant)
+                if (user.role === 'merchant') {
+                    document.getElementById('profileAddressGroup').style.display = 'block';
+                    document.getElementById('profileAddress').textContent = user.address || 'Not set';
+                }
+
+                if (user.role === 'delivery' && (user.deliveryCompany || user.deliveryCompanyName)) {
+                    document.getElementById('profileCompanyGroup').style.display = 'block';
+                    document.getElementById('profileCompany').textContent = user.deliveryCompany || user.deliveryCompanyName;
+                }
+
+                // Show edit button for merchants only
+                if (user.role === 'merchant') {
+                    document.getElementById('editProfileBtn').style.display = '';
+                }
+            }
+
+            renderProfile();
+
+            // Edit Profile button
+            var editProfileBtn = document.getElementById('editProfileBtn');
+            var profileViewCard = document.getElementById('profileViewCard');
+            var profileEditCard = document.getElementById('profileEditCard');
+            var cancelEditBtn = document.getElementById('cancelEditBtn');
+            var editProfileForm = document.getElementById('editProfileForm');
+
+            editProfileBtn.addEventListener('click', function () {
+                var user = auth.getCurrentUser();
+                // Populate form fields
+                document.getElementById('editProfileName').value = user.fullName || '';
+                document.getElementById('editProfileEmail').value = user.email || '';
+                document.getElementById('editProfilePassword').value = '';
+
+                // Show phone field for merchants
+                if (user.role === 'merchant') {
+                    document.getElementById('editProfilePhoneGroup').style.display = 'block';
+                    document.getElementById('editProfilePhone').value = user.phone || '';
+                    document.getElementById('editProfileAddressGroup').style.display = 'block';
+                    document.getElementById('editProfileAddress').value = user.address || '';
+                }
+
+                profileViewCard.style.display = 'none';
+                profileEditCard.style.display = '';
+                editProfileBtn.style.display = 'none';
+            });
+
+            cancelEditBtn.addEventListener('click', function () {
+                profileEditCard.style.display = 'none';
+                profileViewCard.style.display = '';
+                editProfileBtn.style.display = '';
+                // Clear errors
+                document.querySelectorAll('#editProfileForm .form-error').forEach(function (el) { el.textContent = ''; });
+            });
+
+            editProfileForm.addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                // Clear previous errors
+                document.querySelectorAll('#editProfileForm .form-error').forEach(function (el) { el.textContent = ''; });
+
+                var user = auth.getCurrentUser();
+                var newName = document.getElementById('editProfileName').value.trim();
+                var newEmail = document.getElementById('editProfileEmail').value.trim();
+                var newPassword = document.getElementById('editProfilePassword').value;
+                var newPhone = document.getElementById('editProfilePhone').value.trim();
+                var newAddress = document.getElementById('editProfileAddress').value.trim();
+
+                // Validation
+                var isValid = true;
+
+                if (!newName || newName.length < 2) {
+                    document.getElementById('editProfileNameError').textContent = 'Full name is required (min 2 characters)';
+                    isValid = false;
+                }
+
+                var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!newEmail || !emailRegex.test(newEmail)) {
+                    document.getElementById('editProfileEmailError').textContent = 'Please enter a valid email address';
+                    isValid = false;
+                }
+
+                // Check if email is taken by another user
+                if (newEmail !== user.email) {
+                    var existingProfile = await getProfileByEmail(newEmail);
+                    if (existingProfile && existingProfile.id !== user.id) {
+                        document.getElementById('editProfileEmailError').textContent = 'This email is already in use';
+                        isValid = false;
+                    }
+                }
+
+                if (newPassword && newPassword.length < 6) {
+                    document.getElementById('editProfilePasswordError').textContent = 'Password must be at least 6 characters';
+                    isValid = false;
+                }
+
+                if (user.role === 'merchant' && newPhone) {
+                    var phoneRegex = /^\+?[\d\s\-]{7,15}$/;
+                    if (!phoneRegex.test(newPhone)) {
+                        document.getElementById('editProfilePhoneError').textContent = 'Please enter a valid phone number';
+                        isValid = false;
+                    }
+                }
+
+                if (!isValid) return;
+
+                // Update profile in Supabase
+                var updateFields = {
+                    full_name: newName,
+                    email: newEmail
+                };
+                if (newPassword) updateFields.password = newPassword;
+                if (user.role === 'merchant') {
+                    updateFields.phone = newPhone;
+                    updateFields.address = newAddress;
+                }
+
+                var success = await updateProfile(user.id, updateFields);
+                if (!success) {
+                    var existingMsg = document.querySelector('.error-message');
+                    if (existingMsg) existingMsg.remove();
+                    var errorEl = document.createElement('div');
+                    errorEl.className = 'error-message';
+                    errorEl.textContent = 'Failed to update profile. Please try again.';
+                    var pc = document.querySelector('.page-content');
+                    if (pc) pc.insertBefore(errorEl, pc.firstChild);
+                    return;
+                }
+
+                // Update currentUser session
+                var sessionData = {
+                    id: user.id,
+                    email: newEmail,
+                    fullName: newName,
+                    role: user.role
+                };
+                if (user.role === 'merchant') {
+                    sessionData.phone = newPhone;
+                    sessionData.address = newAddress;
+                    sessionData.preferredDelivery = user.preferredDelivery || '';
+                }
+                if (user.role === 'delivery') {
+                    sessionData.deliveryCompany = user.deliveryCompany || '';
+                }
+                sessionStorage.setItem('currentUser', JSON.stringify(sessionData));
+
+                // Switch back to view mode
+                profileEditCard.style.display = 'none';
+                profileViewCard.style.display = '';
+                editProfileBtn.style.display = '';
+
+                // Re-render profile
+                renderProfile();
+
+                // Show success message
+                var existingMsg = document.querySelector('.success-message, .error-message');
+                if (existingMsg) existingMsg.remove();
+                var successEl = document.createElement('div');
+                successEl.className = 'success-message';
+                successEl.textContent = 'Profile updated successfully!';
+                var pageContent = document.querySelector('.page-content');
+                if (pageContent) pageContent.insertBefore(successEl, pageContent.firstChild);
+
+                // Auto-remove success message after 3s
+                setTimeout(function () { if (successEl.parentNode) successEl.remove(); }, 3000);
+            });
+        });
+    </script>
+</body>
+
+</html>

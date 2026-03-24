@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Completed Orders - Waslha</title>
+    <link rel="stylesheet" href="css/global.css">
+</head>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <a href="#" class="navbar-brand" id="dashboardLink">Was<span>lha</span></a>
+            <div class="navbar-links">
+                <a href="#" class="navbar-link" id="ordersLink" style="display: none;" data-i18n="nav.orders">Orders</a>
+                <a href="#" class="navbar-link" id="createOrderLink" style="display: none;" data-i18n="nav.createOrder">Create Order</a>
+                <a href="completed-orders.html" class="navbar-link" id="completedOrdersLink" style="display: none;" data-i18n="nav.completed">Completed</a>
+                <a href="refused-orders.html" class="navbar-link" id="refusedOrdersLink" style="display: none;" data-i18n="nav.refused">Refused</a>
+                <a href="profile.html" class="navbar-link" data-i18n="nav.profile">Profile</a>
+                <button class="btn-link" onclick="auth.logout()" data-i18n="nav.logout">Logout</button>
+                <div class="navbar-toggles">
+                    <button class="toggle-btn theme-toggle" onclick="platformUI.toggleTheme()">🌙 Dark</button>
+                    <button class="toggle-btn lang-toggle" onclick="platformUI.toggleLang()">AR عربي</button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+        <div class="page-content">
+            <div class="page-header">
+                <div class="page-header-illustrated">
+                    <div class="section-illustration section-illustration--success">&#9989;</div>
+                    <div>
+                        <h1 class="page-title" data-i18n="completed.title">Completed Orders</h1>
+                        <p class="page-subtitle" id="pageSubtitle" data-i18n="completed.subtitle">Orders successfully delivered</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Completed Orders List -->
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title" data-i18n="completed.cardTitle">Delivered Orders</h2>
+                </div>
+                <div class="card-body">
+                    <div id="completedOrdersList">
+                        <p style="color: var(--text-secondary);">No completed orders yet</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase/supabaseClient.js"></script>
+    <script src="js/db.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/orders.js"></script>
+    <script src="js/dashboard.js"></script>
+    <script src="js/i18n.js"></script>
+    <script>
+        // Completed orders page – delivery role only
+        document.addEventListener('DOMContentLoaded', async function() {
+            if (!auth.checkPageAccess('delivery')) {
+                return;
+            }
+            auth.initNavigation();
+            platformUI.init();
+
+            // Render smart back button
+            platformUI.renderBackButton('.page-content');
+
+            // Load and render completed orders
+            await orders.loadOrders();
+            var allOrders = orders.getUserOrders();
+            var completedOrdersList = allOrders.filter(function(o) { return o.status === 'delivered'; });
+            dashboard.renderCompletedOrders(completedOrdersList);
+        });
+    </script>
+</body>
+</html>
