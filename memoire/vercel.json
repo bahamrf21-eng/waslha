@@ -1,5 +1,0 @@
-{
-  "rewrites": [
-    { "source": "/", "destination": "/memoire/frontend/html/hero.html" }
-  ]
-}
